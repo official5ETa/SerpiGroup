@@ -9,6 +9,8 @@ const telegram = new TelegramBot(process.env.TELEGRAM_API_TOKEN);
 
 app.use(express.json());
 
+app.use(express.static('./web'));
+
 app.get('/', (req, res) => {
   res.send(`
     <form action="/addUsers" method="post">
