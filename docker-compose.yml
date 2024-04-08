@@ -1,0 +1,8 @@
+version: '3.8'
+
+services:
+    serpioctopus:
+        container_name: serpioctopus
+        image: octopus/serpioctopus
+        ports:
+            - "5900:5900"

@@ -1,4 +1,0 @@
-- eingabefeld für telegram gruppe und automatischem check, ob die gruppe existert
-- eingabefeld für telegram gruppe, wo die nutzer hinzugefügt werden sollen
-- zweites eingabefeld in cookie speichern und automatisch ausfüllen
-- user hinzufügen logik + bestätigung im frontend
