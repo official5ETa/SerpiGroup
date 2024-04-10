@@ -7,4 +7,5 @@ services:
         container_name: serpioctopus
         image: octopus/serpioctopus
         env_file: .env
+        network_mode: host
         restart: always
