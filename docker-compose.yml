@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
     serpioctopus:
+        build:
+            context: .
         container_name: serpioctopus
         image: octopus/serpioctopus
-        ports:
-            - "5900:5900"
