@@ -18,10 +18,12 @@ if not client.is_user_authorized():
     print("authorization required!")
     sys.exit(1)
 
+time.sleep(1)
 from_group = client.get_entity(int(sys.argv[4]))
 
 time.sleep(1)
 final_group = client.get_entity(int(sys.argv[5]))
+time.sleep(1)
 final_group_entity = InputPeerChannel(final_group.id, final_group.access_hash)
 
 time.sleep(1)
