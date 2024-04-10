@@ -36,7 +36,8 @@ for user in users:
             client(InviteToChannelRequest(final_group_entity, [user_to_add]))
             time.sleep(random.randrange(5, 10))
     except PeerFloodError:
-        print("[!] Getting Flood Error from telegram.")
+        print("[!] Getting Flood Error from telegram. Waiting 10min...")
+        time.sleep(600)
     except UserPrivacyRestrictedError:
         print("[!] The user's privacy settings do not allow you to do this. Skipping.")
     except:
