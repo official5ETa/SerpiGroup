@@ -6,3 +6,4 @@ services:
             context: .
         container_name: serpioctopus
         image: octopus/serpioctopus
+        env_file: .env
