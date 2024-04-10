@@ -28,13 +28,13 @@ time.sleep(1)
 users = client.get_participants(from_group, aggressive=True)
 
 for user in users:
-    time.sleep(.5)
+    time.sleep(1)
     try:
         if not user.is_self and not user.bot and user.username and user.photo is None and re.search(r'[^a-zA-Z0-9äöüÄÖÜß]', user.username) is None and user.id != int(sys.argv[6]):
             user_to_add = client.get_input_entity(user.username)
             print("Adding: {}".format(user.username))
             client(InviteToChannelRequest(final_group_entity, [user_to_add]))
-            time.sleep(random.randrange(2, 4))
+            time.sleep(random.randrange(5, 10))
     except PeerFloodError:
         print("[!] Getting Flood Error from telegram.")
     except UserPrivacyRestrictedError:
@@ -44,4 +44,4 @@ for user in users:
         print("[!] Unexpected Error")
         continue
 
-    time.sleep(.5)
+    time.sleep(1)
