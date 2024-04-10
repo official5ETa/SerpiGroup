@@ -1,4 +1,3 @@
-/app/.env
 /app/node_modules
 /app/*.session
 .env
