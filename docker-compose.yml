@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3'
 
 services:
     serpioctopus:
@@ -7,3 +7,4 @@ services:
         container_name: serpioctopus
         image: octopus/serpioctopus
         env_file: .env
+        restart: always
