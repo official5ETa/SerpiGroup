@@ -34,19 +34,22 @@ for (const envVarName of [
 
   console.info('final group found:', finalGroup['username']);
 
+  const telegramBotId = (await telegram.getMe()).id;
+
   telegram.on('message', async (msg) => {
-    for (const member of [msg['new_chat_member'], msg['new_chat_members']])
-      if (member && member.id === (await telegram.getMe()).id) {
+    for (const member of [msg['new_chat_member'], ...(msg['new_chat_members'] || [])])
+      if (member && member.id === telegramBotId) {
 
         const chat = msg['chat'];
         if (chat) {
           console.log('Bot got added to Group:', chat.title, `[${chat.id}]`);
+          try { await telegram.leaveChat(chat.id) } catch (_) {}
 
           await new Promise(async (resolve) => {
             const pyProcess = exec(
               'python3 scrape.py'
                 + ` ${process.env.MYTELEGRAM_ID} ${process.env.MYTELEGRAM_HASH} ${process.env.MYTELEGRAM_PHONE}`
-                + ` ${chat.id} ${finalGroup['id']} ${(await telegram.getMe()).id}`,
+                + ` ${chat.id} ${finalGroup['id']} ${telegramBotId}`,
               error => {
                 if (error) console.error(error);
                 resolve()
