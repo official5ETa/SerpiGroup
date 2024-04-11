@@ -36,10 +36,10 @@ for user in users:
             user_to_add = client.get_input_entity(user.username)
             print("Adding: {}".format(user.username))
             client(InviteToChannelRequest(final_group_entity, [user_to_add]))
-            time.sleep(random.randrange(5, 10))
+            time.sleep(random.randrange(20, 40))
     except PeerFloodError:
         print("[!] Getting Flood Error from telegram. Waiting 10min...")
-        time.sleep(600)
+        time.sleep(900)
     except UserPrivacyRestrictedError:
         print("[!] The user's privacy settings do not allow you to do this. Skipping.")
     except:
@@ -47,4 +47,4 @@ for user in users:
         print("[!] Unexpected Error")
         continue
 
-    time.sleep(1)
+    time.sleep(random.randrange(10, 20))
