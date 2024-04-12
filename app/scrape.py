@@ -11,6 +11,20 @@ from telethon.errors.rpcerrorlist import PeerFloodError, UserPrivacyRestrictedEr
 from telethon.tl.functions.channels import InviteToChannelRequest
 from telethon.tl.types import InputPeerChannel
 
+
+def string_in_array(string, string_array):
+    for s in string_array:
+        if s in string:
+            return True
+    return False
+
+
+def add_user(_user, _final_group_entity):
+    user_to_add = client.get_input_entity(_user.username)
+    print("Adding: {}".format(_user.username))
+    client(InviteToChannelRequest(_final_group_entity, [user_to_add]))
+
+
 client = TelegramClient(sys.argv[3], int(sys.argv[1]), sys.argv[2])
 
 client.connect()
@@ -29,14 +43,28 @@ final_group_entity = InputPeerChannel(final_group.id, final_group.access_hash)
 time.sleep(1)
 users = client.get_participants(from_group, aggressive=True)
 
+exeptedUsernameStrings = [
+    'vendor',
+    'seller',
+    'liefer',
+    'dealer',
+    'verified',
+    'verify',
+    'trip',
+    'market',
+    'shop',
+    'store',
+    'drug'
+]
+
 for user in users:
     time.sleep(1)
     try:
-        if not user.is_self and not user.bot and user.username and re.search(r'[^a-zA-Z0-9äöüÄÖÜß]', str(user.first_name)) is None and re.search(r'[^a-zA-Z0-9äöüÄÖÜß]', str(user.last_name)) is None and user.id != int(sys.argv[6]):
-            user_to_add = client.get_input_entity(user.username)
-            print("Adding: {}".format(user.username))
-            client(InviteToChannelRequest(final_group_entity, [user_to_add]))
-            time.sleep(random.randrange(20, 40))
+        if not user.is_self and not user.bot and not user.fake and not user.support and user.id != int(sys.argv[6]):
+            if user.username and re.search(r'[^a-zA-Z0-9äöüÄÖÜß]', str(user.first_name)) is None and re.search(r'[^a-zA-Z0-9äöüÄÖÜß]',str(user.last_name)) is None:
+                if not string_in_array(user.username, exeptedUsernames) and not string_in_array(user.first_name, exeptedUsernames, user.last_name):
+                    add_user(user, final_group_entity)
+                    time.sleep(random.randrange(20, 40))
     except PeerFloodError:
         print("[!] Getting Flood Error from telegram. Waiting 10min...")
         time.sleep(900)
