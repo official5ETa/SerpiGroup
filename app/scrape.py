@@ -25,6 +25,17 @@ def add_user(_user, _final_group_entity):
     client(InviteToChannelRequest(_final_group_entity, [user_to_add]))
 
 
+try:
+    with open('./exceptedUserStrings.txt', 'r') as datei:
+        excludedUserStrings = datei.readlines()
+        excludedUserStrings = [excludedUserStrings.strip() for excludedUserStrings in excludedUserStrings]
+except FileNotFoundError as e:
+    print("could not find excludedUserStrings.txt")
+    exit(1)
+except Exception as e:
+    print(f"error while reading excludedUserStrings.txt: {e}")
+    exit(1)
+
 client = TelegramClient(sys.argv[3], int(sys.argv[1]), sys.argv[2])
 
 client.connect()
@@ -42,20 +53,6 @@ final_group_entity = InputPeerChannel(final_group.id, final_group.access_hash)
 
 time.sleep(1)
 users = client.get_participants(from_group, aggressive=True)
-
-exeptedUsernameStrings = [
-    'vendor',
-    'seller',
-    'liefer',
-    'dealer',
-    'verified',
-    'verify',
-    'trip',
-    'market',
-    'shop',
-    'store',
-    'drug'
-]
 
 for user in users:
     time.sleep(1)
