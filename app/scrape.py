@@ -1,5 +1,6 @@
 # scrape.py {api_id} {api_hash} {phone} {from_group} {final_group} {bot_id}
 
+import os
 import re
 import sys
 import time
@@ -26,21 +27,31 @@ def add_user(_user, _final_group_entity):
 
 
 try:
-    with open('./exceptedUserStrings.txt', 'r') as datei:
-        excludedUserStrings = datei.readlines()
+    if not os.path.exists('./userAlreadyAdded.txt'):
+        with open('./userAlreadyAdded.txt', "w") as file:
+            file.write("")
+        print("created 'userAlreadyAdded.txt'")
+except Exception as e:
+    print(f"[!] could not create 'userAlreadyAdded.txt: {e}")
+    exit(1)
+
+try:
+    with open('./exceptedUserStrings.txt', 'r') as file:
+        excludedUserStrings = file.readlines()
         excludedUserStrings = [excludedUserStrings.strip() for excludedUserStrings in excludedUserStrings]
 except FileNotFoundError as e:
-    print("could not find excludedUserStrings.txt")
+    print("[!] could not find excludedUserStrings.txt")
     exit(1)
 except Exception as e:
-    print(f"error while reading excludedUserStrings.txt: {e}")
+    print(f"[!] error while reading excludedUserStrings.txt: {e}")
     exit(1)
 
 client = TelegramClient(sys.argv[3], int(sys.argv[1]), sys.argv[2])
 
 client.connect()
+
 if not client.is_user_authorized():
-    print("authorization required!")
+    print("[!] authorization required!")
     sys.exit(1)
 
 time.sleep(1)
@@ -56,20 +67,35 @@ users = client.get_participants(from_group, aggressive=True)
 
 for user in users:
     time.sleep(1)
+
     try:
         if not user.is_self and not user.bot and not user.fake and not user.support and user.id != int(sys.argv[6]):
-            if user.username and re.search(r'[^a-zA-Z0-9äöüÄÖÜß]', str(user.first_name)) is None and re.search(r'[^a-zA-Z0-9äöüÄÖÜß]',str(user.last_name)) is None:
+            if user.username and re.search(r'[^a-zA-Z0-9äöüÄÖÜß]', str(user.first_name)) is None and re.search(r'[^a-zA-Z0-9äöüÄÖÜß]', str(user.last_name)) is None:
                 if not string_in_array(user.username, excludedUserStrings) and not string_in_array(user.first_name, excludedUserStrings):
-                    add_user(user, final_group_entity)
-                    time.sleep(random.randrange(20, 40))
+
+                    try:
+                        with open('./userAlreadyAdded.txt', 'r') as file:
+                            alreadyAddedUsers = file.readlines()
+                            alreadyAddedUsers = [alreadyAddedUsers.strip() for alreadyAddedUsers in alreadyAddedUsers]
+                            alreadyAddedUsers = [alreadyAddedUser for alreadyAddedUser in alreadyAddedUsers if alreadyAddedUser != ""]
+                    except FileNotFoundError as e:
+                        print("[!] could not find userAlreadyAdded.txt")
+                    except Exception as e:
+                        print(f"[!] error while reading userAlreadyAdded.txt: {e}")
+
+                    if not (user.username in alreadyAddedUsers):
+                        with open('./userAlreadyAdded.txt', "w") as file:
+                            file.write('\n'.join(alreadyAddedUsers) + '\n' + user.username)
+
+                        add_user(user, final_group_entity)
+                        time.sleep(random.randrange(20, 40))
     except PeerFloodError:
-        print("[!] Getting Flood Error from telegram. Waiting 10min...")
-        time.sleep(900)
+        print("[!] Getting Flood Error from telegram. Waiting...")
+        exit(1)
     except UserPrivacyRestrictedError:
         print("[!] The user's privacy settings do not allow you to do this. Skipping.")
     except:
         traceback.print_exc()
-        print("[!] Unexpected Error")
         continue
 
     time.sleep(random.randrange(10, 20))
