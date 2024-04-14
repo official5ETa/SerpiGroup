@@ -66,8 +66,6 @@ time.sleep(1)
 users = client.get_participants(from_group, aggressive=True)
 
 for user in users:
-    time.sleep(1)
-
     try:
         if not user.is_self and not user.bot and not user.fake and not user.support and user.id != int(sys.argv[6]):
             if user.username and re.search(r'[^a-zA-Z0-9äöüÄÖÜß]', str(user.first_name).lower()) is None and re.search(r'[^a-zA-Z0-9äöüÄÖÜß]', str(user.last_name).lower()) is None:
@@ -80,22 +78,34 @@ for user in users:
                             alreadyAddedUsers = [alreadyAddedUser for alreadyAddedUser in alreadyAddedUsers if alreadyAddedUser != ""]
                     except FileNotFoundError as e:
                         print("[!] could not find userAlreadyAdded.txt")
+                        time.sleep(30)
+                        continue
                     except Exception as e:
                         print(f"[!] error while reading userAlreadyAdded.txt: {e}")
+                        time.sleep(30)
+                        continue
 
                     if not (user.username in alreadyAddedUsers):
-                        with open('./userAlreadyAdded.txt', "w") as file:
-                            file.write('\n'.join(alreadyAddedUsers) + '\n' + user.username)
+                        try:
+                            with open('./userAlreadyAdded.txt', "w") as file:
+                                file.write('\n'.join(alreadyAddedUsers) + '\n' + user.username)
+                        except Exception as e:
+                            print(f"[!] error while writing userAlreadyAdded.txt: {e}")
+                            time.sleep(30)
+                            continue
 
                         add_user(user, final_group_entity)
-                        time.sleep(random.randrange(20, 40))
+                        time.sleep(random.randrange(30, 60))
+                        continue
+
+        time.sleep(.2)
+
     except PeerFloodError:
         print("[!] Getting Flood Error from telegram. Waiting...")
-        exit(1)
+        time.sleep(3 + 60 + 60)  # 1h
     except UserPrivacyRestrictedError:
         print("[!] The user's privacy settings do not allow you to do this. Skipping.")
+        time.sleep(random.randrange(10, 20))
     except:
         traceback.print_exc()
-        continue
-
-    time.sleep(random.randrange(10, 20))
+        time.sleep(random.randrange(10, 20))
