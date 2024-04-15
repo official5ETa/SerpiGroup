@@ -27,8 +27,8 @@ def add_user(_user, _final_group_entity):
 
 
 try:
-    if not os.path.exists('./userAlreadyAdded.txt'):
-        with open('./userAlreadyAdded.txt', "w") as file:
+    if not os.path.exists('./volume/userAlreadyAdded.txt'):
+        with open('./volume/userAlreadyAdded.txt', "w") as file:
             file.write("")
         print("created 'userAlreadyAdded.txt'")
 except Exception as e:
@@ -36,7 +36,16 @@ except Exception as e:
     exit(1)
 
 try:
-    with open('./exceptedUserStrings.txt', 'r') as file:
+    if not os.path.exists('./volume/exceptedUserStrings.txt'):
+        with open('./volume/exceptedUserStrings.txt', "w") as file:
+            file.write("")
+        print("created 'exceptedUserStrings.txt'")
+except Exception as e:
+    print(f"[!] could not create 'exceptedUserStrings.txt: {e}")
+    exit(1)
+
+try:
+    with open('./volume/exceptedUserStrings.txt', 'r') as file:
         excludedUserStrings = file.readlines()
         excludedUserStrings = [excludedUserStrings.strip() for excludedUserStrings in excludedUserStrings]
 except FileNotFoundError as e:
@@ -46,7 +55,7 @@ except Exception as e:
     print(f"[!] error while reading excludedUserStrings.txt: {e}")
     exit(1)
 
-client = TelegramClient(sys.argv[3], int(sys.argv[1]), sys.argv[2])
+client = TelegramClient('./volume/' + sys.argv[3], int(sys.argv[1]), sys.argv[2])
 
 client.connect()
 
@@ -72,7 +81,7 @@ for user in users:
                 if not string_in_array(user.username.lower(), excludedUserStrings) and not string_in_array(user.first_name.lower(), excludedUserStrings):
 
                     try:
-                        with open('./userAlreadyAdded.txt', 'r') as file:
+                        with open('./volume/userAlreadyAdded.txt', 'r') as file:
                             alreadyAddedUsers = file.readlines()
                             alreadyAddedUsers = [alreadyAddedUsers.strip() for alreadyAddedUsers in alreadyAddedUsers]
                             alreadyAddedUsers = [alreadyAddedUser for alreadyAddedUser in alreadyAddedUsers if alreadyAddedUser != ""]
@@ -87,7 +96,7 @@ for user in users:
 
                     if not (user.username in alreadyAddedUsers):
                         try:
-                            with open('./userAlreadyAdded.txt', "w") as file:
+                            with open('./volume/userAlreadyAdded.txt', "w") as file:
                                 file.write('\n'.join(alreadyAddedUsers) + '\n' + user.username)
                         except Exception as e:
                             print(f"[!] error while writing userAlreadyAdded.txt: {e}")

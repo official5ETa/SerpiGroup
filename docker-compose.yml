@@ -7,5 +7,7 @@ services:
         container_name: serpioctopus
         image: octopus/serpioctopus
         env_file: .env
+        volumes:
+            - ./app/volume:/home/node/volume
         network_mode: host
         restart: always

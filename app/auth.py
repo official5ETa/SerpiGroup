@@ -8,7 +8,7 @@ from telethon.sync import TelegramClient
 
 phone = sys.argv[3]
 
-client = TelegramClient(phone, int(sys.argv[1]), sys.argv[2])
+client = TelegramClient('./volume/' + phone, int(sys.argv[1]), sys.argv[2])
 
 client.connect()
 if not client.is_user_authorized():
@@ -16,8 +16,8 @@ if not client.is_user_authorized():
     client.send_code_request(phone)
 
     while True:
-        if os.path.exists('.AUTHCODE'):
-            with open('.AUTHCODE', 'r+') as file:
+        if os.path.exists('./volume/.AUTHCODE'):
+            with open('./volume/.AUTHCODE', 'r+') as file:
                 auth_code = file.read().strip()
                 if auth_code:
                     client.sign_in(phone, auth_code)

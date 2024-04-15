@@ -1,3 +1,6 @@
 /app/node_modules
-/app/*.session
+/app/volume/*.session
+/app/volume/*.session-journal
+/app/volume/userAlreadyAdded.txt
+/app/volume/exceptedUserStrings.txt
 .env
