@@ -111,7 +111,7 @@ for user in users:
 
     except PeerFloodError:
         print("[!] Getting Flood Error from telegram. Waiting...")
-        time.sleep(3 + 60 + 60)  # 1h
+        time.sleep(3 * 60 * 60)  # 1h
     except UserPrivacyRestrictedError:
         print("[!] The user's privacy settings do not allow you to do this. Skipping.")
         time.sleep(random.randrange(10, 20))
