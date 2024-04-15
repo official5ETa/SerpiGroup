@@ -55,7 +55,7 @@ except Exception as e:
     print(f"[!] error while reading excludedUserStrings.txt: {e}")
     exit(1)
 
-client = TelegramClient('./volume/' + sys.argv[3], int(sys.argv[1]), sys.argv[2])
+client = TelegramClient(f"./volume/{sys.argv[3]}", int(sys.argv[1]), sys.argv[2])
 
 client.connect()
 

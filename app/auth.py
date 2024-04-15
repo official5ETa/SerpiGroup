@@ -8,7 +8,7 @@ from telethon.sync import TelegramClient
 
 phone = sys.argv[3]
 
-client = TelegramClient('./volume/' + phone, int(sys.argv[1]), sys.argv[2])
+client = TelegramClient(f"./volume/{phone}", int(sys.argv[1]), sys.argv[2])
 
 client.connect()
 if not client.is_user_authorized():
