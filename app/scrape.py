@@ -22,7 +22,7 @@ def string_in_array(string, string_array):
 
 def add_user(_user, _final_group_entity):
     user_to_add = client.get_input_entity(_user.username)
-    print(f"Adding: {_user.username}")
+    print(f"Adding: {_user.username} ({user.first_name} {user.last_name})")
     client(InviteToChannelRequest(_final_group_entity, [user_to_add]))
 
 
