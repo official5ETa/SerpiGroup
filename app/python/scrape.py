@@ -59,6 +59,7 @@ client.connect()
 
 time.sleep(1)
 from_group = client.get_entity(int(sys.argv[4]))
+print_data('FROM_GROUP_TITLE', from_group.title)
 
 time.sleep(1)
 final_group = client.get_entity(int(sys.argv[5]))

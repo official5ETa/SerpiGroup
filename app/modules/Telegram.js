@@ -73,6 +73,9 @@ class Telegram extends EventEmitter {
             case 'CREATED_EXCEPTEDUSERSTRINGS':
               this.emit('scrape.created_excepteduserstrings');
               break;
+            case 'FROM_GROUP_TITLE':
+              this.emit('scrape.from_group_title', data);
+              break;
           }
         });
 
@@ -92,11 +95,6 @@ class Telegram extends EventEmitter {
         reject(error);
       }
     });
-  }
-
-  async start(fromGroupId, finalGroupId) {
-    await this.auth();
-    await this.scrape(fromGroupId, finalGroupId);
   }
 }
 

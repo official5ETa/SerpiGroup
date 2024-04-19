@@ -3,6 +3,7 @@
     "start": "node index.js"
   },
   "dependencies": {
+    "yaml": "^2.4.1",
     "dotenv": "^16.4.5",
     "python-shell": "^5.0.0"
   }

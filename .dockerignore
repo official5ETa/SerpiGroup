@@ -4,4 +4,5 @@
 /app/volume/*.session-journal
 /app/volume/userAlreadyAdded.nsv
 /app/volume/exceptedUserStrings.nsv
+/app/volume/config.yml
 .env
