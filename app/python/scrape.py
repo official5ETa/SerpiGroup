@@ -99,7 +99,7 @@ for user in users:
 
                             except PeerFloodError:
                                 print_data('ERROR', 'USERADD_FLOOD')
-                                time.sleep(3 * 60 * 60)  # 3h
+                                time.sleep(random.randrange(1800, 5400))
 
                             except UserPrivacyRestrictedError:
                                 file.write('\n'.join(alreadyAddedUsers) + '\n' + user.username)
