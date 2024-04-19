@@ -96,7 +96,7 @@ class Telegram extends EventEmitter {
     });
   }
 
-  async exit() {
+  exit() {
     return new Promise((resolve) => {
       setTimeout(() => {
         this.#authProcess  ?.kill('SIGTERM');
