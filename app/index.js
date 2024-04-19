@@ -84,7 +84,7 @@ for (const api of params.api) {
   telegram.on('scrape.add_user', (function(user) { console.log(this.phone, '|', 'added user:', user['username'], `(${user['firstname']} ${user['lastname']})`) }).bind(telegram));
 
   telegram.auth().then((async function() {
-    for (let fromGroupId; (fromGroupId = params.fromGroupIds[Math.floor(Math.random() * params.fromGroupIds.length)]);)
+    for (let fromGroupId; (fromGroupId = params.fromGroupIds.sort(() => Math.random()-.5)[Math.floor(Math.random() * params.fromGroupIds.length)]);)
       await this.scrape(fromGroupId, params.finalGroupId);
   }).bind(telegram));
 }
