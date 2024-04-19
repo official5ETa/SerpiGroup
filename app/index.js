@@ -81,7 +81,6 @@ for (const api of params.api) {
   telegram.on('auth.success', (function() { console.info(this.phone, '|', 'authorized') }).bind(telegram));
 
   telegram.on('scrape.error', (function(e) { console.error(this.phone, '|', e) }).bind(telegram));
-  telegram.on('scrape.start', (function() { console.log(this.phone, '|', 'started') }).bind(telegram));
   telegram.on('scrape.from_group_title', (function(title) { console.info(this.phone, '|', 'scraping from group:', title) }).bind(telegram));
   telegram.on('scrape.add_user', (function(user) { console.log(this.phone, '|', 'added user:', user['username'], `(${user['firstname']} ${user['lastname']})`) }).bind(telegram));
 

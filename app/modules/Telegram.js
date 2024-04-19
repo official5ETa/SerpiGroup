@@ -66,9 +66,6 @@ class Telegram extends EventEmitter {
               break;
             case 'ERROR':
               this.emit('scrape.error', data);
-              break;
-            case 'START':
-              this.emit('scrape.start');
               break
             case 'CREATED_USERALREADYADDED':
               this.emit('scrape.created_useralreadyadded');

@@ -70,8 +70,6 @@ time.sleep(1)
 users = client.get_participants(from_group, aggressive=True)
 
 
-print_data('START')
-
 for user in users:
     if not user.is_self and not user.bot and not user.fake and not user.support:
         if user.username and re.search(r'[^a-zA-Z0-9äöüÄÖÜß]', str(user.first_name).lower()) is None and re.search(r'[^a-zA-Z0-9äöüÄÖÜß]', str(user.last_name).lower()) is None:
