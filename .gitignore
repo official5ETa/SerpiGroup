@@ -1,8 +1,8 @@
 /app/node_modules
-/app/volume/*.authcode
-/app/volume/*.session
-/app/volume/*.session-journal
-/app/volume/userAlreadyAdded.nsv
-/app/volume/exceptedUserStrings.nsv
-/app/volume/config.yml
+/app/shared/*.authcode
+/app/shared/*.session
+/app/shared/*.session-journal
+/app/shared/userAlreadyAdded.nsv
+/app/shared/exceptedUserStrings.nsv
+/app/shared/config.yml
 .env

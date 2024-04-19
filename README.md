@@ -1,6 +1,6 @@
 ## config.yml setup
 
-`volume/config.yml`
+`shared/config.yml`
 
 ```yaml
 final_group_id: FINAL_GROUP_ID

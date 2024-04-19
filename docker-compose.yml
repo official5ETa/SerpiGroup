@@ -8,6 +8,6 @@ services:
         image: octopus/serpioctopus
         env_file: .env
         volumes:
-            - ./app/volume:/home/node/volume
+            - ./app/shared:/home/node/shared
         network_mode: host
         restart: always

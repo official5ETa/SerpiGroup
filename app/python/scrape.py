@@ -13,8 +13,8 @@ from telethon.tl.functions.channels import InviteToChannelRequest
 from telethon.tl.types import InputPeerChannel
 
 
-user_already_added_file = './volume/userAlreadyAdded.nsv'
-excepted_user_strings_file = './volume/exceptedUserStrings.nsv'
+user_already_added_file = './shared/userAlreadyAdded.nsv'
+excepted_user_strings_file = './shared/exceptedUserStrings.nsv'
 
 
 def print_data(code, data=None):
@@ -53,7 +53,7 @@ except:
     exit(1)
 
 
-client = TelegramClient(f"./volume/{sys.argv[3]}", int(sys.argv[1]), sys.argv[2])
+client = TelegramClient(f"./shared/{sys.argv[3]}", int(sys.argv[1]), sys.argv[2])
 client.connect()
 
 

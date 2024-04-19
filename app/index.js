@@ -22,8 +22,8 @@ const params = {
 
 
 
-if (existsSync('volume/config.yml')) {
-  const config = require('yaml').parse(readFileSync('volume/config.yml', 'utf8'));
+if (existsSync('shared/config.yml')) {
+  const config = require('yaml').parse(readFileSync('shared/config.yml', 'utf8'));
   params.finalGroupId = config['final_group_id'];
   params.fromGroupIds = config['from_group_ids'];
   params.api = config['api'].map(({ phone, id, hash }) => ({ phone, id, hash }));
