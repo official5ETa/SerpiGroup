@@ -81,7 +81,10 @@ for user in users:
                     with open(user_already_added_file, 'r+') as file:
                         alreadyAddedUsers = [alreadyAddedUser.strip() for alreadyAddedUser in file.readlines() if alreadyAddedUser.strip() != ""]
 
-                        if not (user.username in alreadyAddedUsers):
+                        if user.username in alreadyAddedUsers:
+                            time.sleep(.2)
+
+                        else:
                             try:
                                 user_to_add = client.get_input_entity(user.username)
                                 client(InviteToChannelRequest(final_group_entity, [user_to_add]))

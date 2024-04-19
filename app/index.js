@@ -72,6 +72,8 @@ console.info(
 
 
 
+const bots = [];
+
 for (const api of params.api) {
   const telegram = new Telegram(api.phone, api.id, api.hash);
 
@@ -87,4 +89,11 @@ for (const api of params.api) {
     for (let fromGroupId; (fromGroupId = params.fromGroupIds.sort(() => Math.random()-.5)[Math.floor(Math.random() * params.fromGroupIds.length)]);)
       await this.scrape(fromGroupId, params.finalGroupId);
   }).bind(telegram));
+
+  bots.push(telegram);
 }
+
+
+
+process.on('exit', async () =>
+  await Promise.all(bots.map(bot => bot.exit())));

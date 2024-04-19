@@ -7,6 +7,9 @@ class Telegram extends EventEmitter {
   apiId;
   apiHash;
 
+  #authProcess;
+  #scrapeProcess;
+
   constructor(phone, apiId, apiHash) {
     super();
     this.phone = phone;
@@ -17,12 +20,12 @@ class Telegram extends EventEmitter {
   auth() {
     return new Promise((resolve, reject) => {
       try {
-        const authProcess = new PythonShell('python/auth.py', {
+        this.#authProcess = new PythonShell('python/auth.py', {
           env: { PYTHONUNBUFFERED: '1' },
           args: [this.apiId, this.apiHash, this.phone]
         });
 
-        authProcess.on('message', message => {
+        this.#authProcess.on('message', message => {
           switch (message) {
             case 'AUTH_REQUIRED':
               this.emit('auth.required');
@@ -33,8 +36,8 @@ class Telegram extends EventEmitter {
           }
         });
 
-        authProcess.on('close', () => resolve());
-        authProcess.on('error', error => {
+        this.#authProcess.on('close', () => resolve());
+        this.#authProcess.on('error', error => {
           this.emit('auth.error', error);
           reject(error);
         });
@@ -48,12 +51,12 @@ class Telegram extends EventEmitter {
   scrape(fromGroupId, finalGroupId) {
     return new Promise((resolve, reject) => {
       try {
-        const scrapeProcess = new PythonShell('python/scrape.py', {
+        this.#scrapeProcess = new PythonShell('python/scrape.py', {
           env: { PYTHONUNBUFFERED: '1' },
           args: [this.apiId, this.apiHash, this.phone, fromGroupId, finalGroupId]
         });
 
-        scrapeProcess.on('message', message => {
+        this.#scrapeProcess.on('message', message => {
           let code, data;
           try { ({ code, data } = JSON.parse(message)) } catch (_) { return }
 
@@ -80,12 +83,12 @@ class Telegram extends EventEmitter {
         });
 
 
-        scrapeProcess.on('close', () => {
+        this.#scrapeProcess.on('close', () => {
           this.emit('scrape.closed');
           resolve();
         });
 
-        scrapeProcess.on('error', error => {
+        this.#scrapeProcess.on('error', error => {
           this.emit('scrape.error', error);
           reject(error);
         });
@@ -93,6 +96,21 @@ class Telegram extends EventEmitter {
         this.emit('scrape.error', error);
         reject(error);
       }
+    });
+  }
+
+  async exit() {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        this.#authProcess  ?.kill('SIGTERM');
+        this.#scrapeProcess?.kill('SIGTERM');
+        resolve();
+      }, 5e3);
+
+      Promise.all([
+        new Promise(resolve => this.#authProcess   ? this.#authProcess  ?.end(() => resolve()) : resolve()),
+        new Promise(resolve => this.#scrapeProcess ? this.#scrapeProcess?.end(() => resolve()) : resolve()),
+      ]).then(() => resolve());
     });
   }
 }
