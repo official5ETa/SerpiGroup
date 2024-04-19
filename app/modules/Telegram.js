@@ -81,7 +81,6 @@ class Telegram extends EventEmitter {
 
 
         scrapeProcess.on('close', () => {
-          // Scrape erfolgreich
           this.emit('scrape.closed');
           resolve();
         });
