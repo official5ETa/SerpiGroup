@@ -4,6 +4,6 @@
   },
   "dependencies": {
     "dotenv": "^16.4.5",
-    "node-telegram-bot-api": "^0.65.1"
+    "python-shell": "^5.0.0"
   }
 }

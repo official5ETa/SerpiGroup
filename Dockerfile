@@ -8,7 +8,6 @@ RUN apt-get update \
  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 COPY ./app .
-RUN chmod -v 777 .AUTHCODE
 
 RUN pip3 install --no-cache telethon
 RUN npm install --no-cache
