@@ -2,7 +2,7 @@
 /app/shared/*.authcode
 /app/shared/*.session
 /app/shared/*.session-journal
-/app/shared/userAlreadyAdded.nsv
-/app/shared/exceptedUserStrings.nsv
+/app/shared/userAlreadyAdded.txt
+/app/shared/exceptedUserStrings.txt
 /app/shared/config.yml
 .env

@@ -13,8 +13,8 @@ from telethon.tl.functions.channels import InviteToChannelRequest
 from telethon.tl.types import InputPeerChannel
 
 
-user_already_added_file = './shared/userAlreadyAdded.nsv'
-excepted_user_strings_file = './shared/exceptedUserStrings.nsv'
+user_already_added_file = './shared/userAlreadyAdded.txt'
+excepted_user_strings_file = './shared/exceptedUserStrings.txt'
 
 
 def print_data(code, data=None):
