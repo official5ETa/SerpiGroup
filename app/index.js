@@ -82,7 +82,7 @@ for (const api of params.api) {
 
   telegram.on('scrape.error', (function(e) { console.error(this.phone, '|', e) }).bind(telegram));
   telegram.on('scrape.from_group_title', (function(title) { console.info(this.phone, '|', 'scraping from group:', title) }).bind(telegram));
-  telegram.on('scrape.add_user', (function(user) { console.log(this.phone, '|', 'added user:', user['username'], `(${user['firstname']} ${user['lastname']})`) }).bind(telegram));
+  telegram.on('scrape.add_user', (function(user) { console.log(this.phone, '|', 'added user:', user['username'], '(' + user['firstname'] + (user['lastname'] ? ' '+user['lastname'] : '') + ')') }).bind(telegram));
 
   telegram.auth().then((async function() {
     for (let fromGroupId; (fromGroupId = params.fromGroupIds.sort(() => Math.random()-.5)[Math.floor(Math.random() * params.fromGroupIds.length)]);)
