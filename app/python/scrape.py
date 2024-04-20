@@ -68,6 +68,7 @@ final_group_entity = InputPeerChannel(final_group.id, final_group.access_hash)
 
 time.sleep(1)
 users = client.get_participants(from_group, aggressive=True)
+random.shuffle(users)
 
 
 for user in users:
