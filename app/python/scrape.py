@@ -86,7 +86,7 @@ for user in users:
                             try:
                                 user_to_add = client.get_input_entity(user.username)
                                 client(InviteToChannelRequest(final_group_entity, [user_to_add]))
-                                file.write('\n'.join(alreadyAddedUsers) + '\n' + user.username)
+                                file.write('\n' + user.username)
 
                                 print_data('ADD_USER', {
                                     'username': user.username,
@@ -100,12 +100,12 @@ for user in users:
                                 time.sleep(random.randrange(1800, 5400))
 
                             except UserPrivacyRestrictedError:
-                                file.write('\n'.join(alreadyAddedUsers) + '\n' + user.username)
+                                file.write('\n' + user.username)
                                 print_data('ERROR', 'USERADD_PRIVACY')
                                 time.sleep(random.randrange(10, 20))
 
                             except:
-                                file.write('\n'.join(alreadyAddedUsers) + '\n' + user.username)
+                                file.write('\n' + user.username)
                                 print_data('ERROR', 'USERADD_UNKNOWN')
                                 time.sleep(random.randrange(10, 20))
 
