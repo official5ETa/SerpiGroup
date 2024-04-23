@@ -6,7 +6,6 @@ services:
             context: .
         container_name: serpioctopus
         image: octopus/serpioctopus
-        env_file: .env
         volumes:
             - ./app/shared:/home/node/shared
         network_mode: host
