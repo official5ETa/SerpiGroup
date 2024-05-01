@@ -72,7 +72,7 @@ random.shuffle(users)
 
 for user in users:
     if not user.is_self and not user.bot and not user.fake and not user.support and not user.deleted and not isinstance(user.photo, UserProfilePhoto):
-        if user.username and re.search(r'[^a-zA-Z0-9äöüÄÖÜß]', str(user.first_name).lower()) is None and re.search(r'[^a-zA-Z0-9äöüÄÖÜß]', str(user.last_name).lower()) is None:
+        if user.username and len(str(user.first_name)) > 1 and re.search(r'[^a-zA-Z0-9äöüÄÖÜß]', str(user.first_name).lower()) is None and re.search(r'[^a-zA-Z0-9äöüÄÖÜß]', str(user.last_name).lower()) is None:
             if not string_in_array(user.username.lower(), exceptedUserStrings) and not string_in_array(user.first_name.lower(), exceptedUserStrings):
                 if isinstance(user.status, UserStatusOnline) or isinstance(user.status, UserStatusRecently):
 
