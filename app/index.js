@@ -68,9 +68,10 @@ if (!params.api.length)
 
 console.info(
   '\n----------------------------------------------------------------',
-  '\nfinal group id: ', params.finalGroupId,
-  '\nfrom groups:    ', params.fromGroupIds.length,
-  '\napis:           ', params.api.length,
+                   '\nfinal group id: ',  params.finalGroupId,
+                   '\nfrom groups:    ',  params.fromGroupIds.length,
+                   '\napis:           ',  params.api.length,
+  params.runtime ? '\nruntime:        ' + params.runtime : '',
   '\n----------------------------------------------------------------\n'
 );
 
