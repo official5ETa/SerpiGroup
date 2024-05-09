@@ -71,7 +71,7 @@ console.info(
                    '\nfinal group id: ',  params.finalGroupId,
                    '\nfrom groups:    ',  params.fromGroupIds.length,
                    '\napis:           ',  params.api.length,
-  params.runtime ? '\nruntime:        ' + params.runtime + 'ms' : '',
+  params.runtime ? '\nruntime:         '+ params.runtime + 'ms' : '',
   '\n----------------------------------------------------------------\n'
 );
 
