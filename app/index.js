@@ -5,7 +5,8 @@ const Telegram = require("./modules/Telegram");
 
 /**
  * @type {{
- *   finalGroupId: string,
+ *   runtime: number | null,
+ *   finalGroupId: string | null,
  *   fromGroupIds: string[],
  *   api: {
  *     phone: string,
@@ -15,6 +16,7 @@ const Telegram = require("./modules/Telegram");
  * }}
  */
 const params = {
+  runtime: null,
   finalGroupId: null,
   fromGroupIds: [],
   api: []
@@ -24,6 +26,7 @@ const params = {
 
 if (existsSync('shared/config.yml')) {
   const config = require('yaml').parse(readFileSync('shared/config.yml', 'utf8'));
+  params.runtime = config['runtime'];
   params.finalGroupId = config['final_group_id'];
   params.fromGroupIds = config['from_group_ids'];
   params.api = config['api'].map(({ phone, id, hash }) => ({ phone, id, hash }));
@@ -44,6 +47,7 @@ else {
   ]) if (process.env[envVarName] === undefined)
     throw new Error('env var is not set: ' + envVarName);
 
+  params.runtime = process.env.RUNTIME ? parseInt(process.env.RUNTIME) : null;
   params.finalGroupId = process.env.FINAL_GROUP_ID;
   params.fromGroupIds = [process.env.FROM_GROUP_ID];
   params.api = [{
@@ -96,3 +100,8 @@ for (const api of params.api) {
 
 process.on('exit', async () =>
   await Promise.all(bots.map(bot => bot.exit())));
+
+
+
+if (params.runtime)
+  setTimeout(process.exit, params.runtime);
