@@ -105,4 +105,7 @@ process.on('exit', async () =>
 
 
 if (params.runtime)
-  setTimeout(process.exit, params.runtime);
+  setTimeout(() => {
+    console.info('auto runtime exit');
+    process.exit();
+  }, params.runtime);
