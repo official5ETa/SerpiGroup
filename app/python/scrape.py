@@ -1,4 +1,4 @@
-# scrape.py {api_id} {api_hash} {phone} {from_group} {final_group}
+# scrape.py {api_id} {api_hash} {phone} {from_group} {final_group} {max_users}
 
 import os
 import re
@@ -84,6 +84,16 @@ for user in users:
                                 time.sleep(.2)
 
                             else:
+                                try:
+                                    if sys.argv[6] and int(sys.argv[6]) != -1:
+                                        participants = client.get_participants(final_group_entity)
+                                        if len(participants) >= int(sys.argv[6]):
+                                            print_data('MAX_USERS_REACHED', int(sys.argv[6]))
+                                            exit()
+                                except:
+                                    time.sleep(.2)
+                                    continue
+
                                 try:
                                     user_to_add = client.get_input_entity(user.username)
                                     client(InviteToChannelRequest(final_group_entity, [user_to_add]))

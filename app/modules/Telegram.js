@@ -48,12 +48,12 @@ class Telegram extends EventEmitter {
     })
   }
 
-  scrape(fromGroupId, finalGroupId) {
+  scrape(fromGroupId, finalGroupId, maxUsers = undefined) {
     return new Promise((resolve, reject) => {
       try {
         this.#scrapeProcess = new PythonShell('python/scrape.py', {
           env: { PYTHONUNBUFFERED: '1' },
-          args: [this.apiId, this.apiHash, this.phone, fromGroupId, finalGroupId]
+          args: [this.apiId, this.apiHash, this.phone, fromGroupId, finalGroupId, maxUsers || -1]
         });
 
         this.#scrapeProcess.on('message', message => {
@@ -75,6 +75,9 @@ class Telegram extends EventEmitter {
               break;
             case 'FROM_GROUP_TITLE':
               this.emit('scrape.from_group_title', data);
+              break;
+            case 'MAX_USERS_REACHED':
+              this.emit('scrape.max_users_reached', data);
               break;
           }
         });

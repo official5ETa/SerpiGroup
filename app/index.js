@@ -6,6 +6,7 @@ const Telegram = require("./modules/Telegram");
 /**
  * @type {{
  *   runtime: number | null,
+ *   maxUsers: number | null,
  *   finalGroupId: string | null,
  *   fromGroupIds: string[],
  *   api: {
@@ -17,6 +18,7 @@ const Telegram = require("./modules/Telegram");
  */
 const params = {
   runtime: null,
+  maxUsers: null,
   finalGroupId: null,
   fromGroupIds: [],
   api: []
@@ -27,6 +29,7 @@ const params = {
 if (existsSync('shared/config.yml')) {
   const config = require('yaml').parse(readFileSync('shared/config.yml', 'utf8'));
   params.runtime = config['runtime'];
+  params.maxUsers = config['max_users'];
   params.finalGroupId = config['final_group_id'];
   params.fromGroupIds = config['from_group_ids'];
   params.api = config['api'].map(({ phone, id, hash }) => ({ phone, id, hash }));
@@ -47,7 +50,8 @@ else {
   ]) if (process.env[envVarName] === undefined)
     throw new Error('env var is not set: ' + envVarName);
 
-  params.runtime = process.env.RUNTIME ? parseInt(process.env.RUNTIME) : null;
+  params.runtime  = process.env.RUNTIME   ? parseInt(process.env.RUNTIME  ) : null;
+  params.maxUsers = process.env.MAX_USERS ? parseInt(process.env.MAX_USERS) : null;
   params.finalGroupId = process.env.FINAL_GROUP_ID;
   params.fromGroupIds = [process.env.FROM_GROUP_ID];
   params.api = [{
@@ -68,10 +72,11 @@ if (!params.api.length)
 
 console.info(
   '\n----------------------------------------------------------------',
-                   '\nfinal group id: ',  params.finalGroupId,
-                   '\nfrom groups:    ',  params.fromGroupIds.length,
-                   '\napis:           ',  params.api.length,
-  params.runtime ? '\nruntime:         '+ params.runtime + 'ms' : '',
+                    '\nfinal group id: ', params.finalGroupId,
+                    '\nfrom groups:    ', params.fromGroupIds.length,
+                    '\napis:           ', params.api.length,
+  params.runtime  ? '\nruntime:         '+params.runtime + 'ms' : '',
+  params.maxUsers ? '\nmax users:       '+params.maxUsers : '',
   '\n----------------------------------------------------------------\n'
 );
 
@@ -88,10 +93,14 @@ for (const api of params.api) {
   telegram.on('scrape.error', (function(e) { console.error(this.phone, '|', e) }).bind(telegram));
   telegram.on('scrape.from_group_title', (function(title) { console.info(this.phone, '|', 'scraping from group:', title) }).bind(telegram));
   telegram.on('scrape.add_user', (function(user) { console.log(this.phone, '|', 'added user:', user['username'], '(' + user['firstname'] + (user['lastname'] ? ' '+user['lastname'] : '') + ')') }).bind(telegram));
+  telegram.on('scrape.max_users_reached', count => {
+    console.info('max users reached:', count);
+    process.exit();
+  });
 
   telegram.auth().then((async function() {
     for (let fromGroupId; (fromGroupId = params.fromGroupIds.sort(() => Math.random()-.5)[Math.floor(Math.random() * params.fromGroupIds.length)]);)
-      await this.scrape(fromGroupId, params.finalGroupId);
+      await this.scrape(fromGroupId, params.finalGroupId, params.maxUsers);
   }).bind(telegram));
 
   bots.push(telegram);
