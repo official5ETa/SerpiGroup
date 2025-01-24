@@ -1,4 +1,4 @@
-# scrape.py {api_id} {api_hash} {phone} {from_group} {final_group} {max_users}
+# scrape.py {api_id} {api_hash} {phone} {from_group} {final_group} {max_users} {all|active}
 
 import os
 import re
@@ -39,6 +39,18 @@ def create_user_already_added_file():
         exit(1)
 
 
+def get_all_users_from_group(group):
+    return client.get_participants(group, aggressive=True)
+
+
+def get_active_users_from_group(group):
+    active_users = {}
+    for message in client.iter_messages(group):
+        if message.sender_id and message.sender_id not in active_users:
+            active_users[message.sender_id] = client.get_entity(message.sender_id)
+    return list(active_users.values())
+
+
 def is_user_in_group(group, username_to_find):
     if client.get_participants(
         group,
@@ -62,10 +74,8 @@ except:
     print_data('ERROR', 'COULD_NOT_OPEN_EXCEPTEDUSERSTRINGS')
     exit(1)
 
-
 client = TelegramClient(f"./shared/{sys.argv[3]}", int(sys.argv[1]), sys.argv[2])
 client.connect()
-
 
 time.sleep(1)
 from_group = client.get_entity(PeerChannel(abs(int(sys.argv[4]))))
@@ -77,8 +87,13 @@ time.sleep(1)
 final_group_entity = InputPeerChannel(final_group.id, final_group.access_hash)
 
 time.sleep(1)
-users = client.get_participants(from_group, aggressive=True)
+match sys.argv[7] if len(sys.argv) > 7 else None:
+    case 'active':
+        users = get_active_users_from_group(from_group)
+    case _:
+        users = get_all_users_from_group(from_group)
 random.shuffle(users)
+
 
 for user in users:
     if not user.is_self and not user.bot and not user.fake and not user.support and not user.deleted and not isinstance(
