@@ -10,7 +10,8 @@ import json
 from telethon.sync import TelegramClient
 from telethon.errors.rpcerrorlist import PeerFloodError, UserPrivacyRestrictedError
 from telethon.tl.functions.channels import InviteToChannelRequest
-from telethon.tl.types import InputPeerChannel, UserStatusOnline, UserStatusRecently, UserProfilePhoto
+from telethon.tl.types import InputPeerChannel, UserStatusOnline, UserStatusRecently, UserProfilePhoto, \
+    ChannelParticipantsSearch, PeerChannel
 
 user_already_added_file = './shared/userAlreadyAdded.txt'
 excepted_user_strings_file = './shared/exceptedUserStrings.txt'
@@ -38,12 +39,22 @@ def create_user_already_added_file():
         exit(1)
 
 
-create_user_already_added_file()
+def is_user_in_group(group, username_to_find):
+    if client.get_participants(
+        group,
+        filter=ChannelParticipantsSearch(username_to_find)
+    ):
+        return True
+    else:
+        return False
 
+
+create_user_already_added_file()
 
 try:
     with open(excepted_user_strings_file, 'r+') as file:
-        exceptedUserStrings = [exceptedUserString.strip() for exceptedUserString in file.readlines() if exceptedUserString.strip() != ""]
+        exceptedUserStrings = [exceptedUserString.strip() for exceptedUserString in file.readlines() if
+                               exceptedUserString.strip() != ""]
         if not exceptedUserStrings:
             file.write('')
             print_data('CREATED_EXCEPTEDUSERSTRINGS')
@@ -69,16 +80,20 @@ time.sleep(1)
 users = client.get_participants(from_group, aggressive=True)
 random.shuffle(users)
 
-
 for user in users:
-    if not user.is_self and not user.bot and not user.fake and not user.support and not user.deleted and not isinstance(user.photo, UserProfilePhoto):
-        if user.username and len(str(user.first_name)) > 1 and re.search(r'[^a-zA-Z0-9äöüÄÖÜß]', str(user.first_name).lower()) is None and re.search(r'[^a-zA-Z0-9äöüÄÖÜß]', str(user.last_name).lower()) is None:
-            if not string_in_array(user.username.lower(), exceptedUserStrings) and not string_in_array(user.first_name.lower(), exceptedUserStrings):
+    if not user.is_self and not user.bot and not user.fake and not user.support and not user.deleted and not isinstance(
+            user.photo, UserProfilePhoto):
+        if user.username and len(str(user.first_name)) > 1 and re.search(r'[^a-zA-Z0-9äöüÄÖÜß]',
+                                                                         str(user.first_name).lower()) is None and re.search(
+                r'[^a-zA-Z0-9äöüÄÖÜß]', str(user.last_name).lower()) is None:
+            if not string_in_array(user.username.lower(), exceptedUserStrings) and not string_in_array(
+                    user.first_name.lower(), exceptedUserStrings):
                 if isinstance(user.status, UserStatusOnline) or isinstance(user.status, UserStatusRecently):
 
                     try:
                         with open(user_already_added_file, 'r+') as file:
-                            alreadyAddedUsers = [alreadyAddedUser.strip() for alreadyAddedUser in file.readlines() if alreadyAddedUser.strip() != ""]
+                            alreadyAddedUsers = [alreadyAddedUser.strip() for alreadyAddedUser in file.readlines() if
+                                                 alreadyAddedUser.strip() != ""]
 
                             if user.username in alreadyAddedUsers:
                                 time.sleep(.2)
