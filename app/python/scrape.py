@@ -67,15 +67,14 @@ def complies_with_user_rules(user):
         and not user.fake \
         and not user.support \
         and not user.deleted \
-        and not isinstance(user.photo, UserProfilePhoto) \
-        and not user.username \
+        and user.username \
         and len(str(user.first_name)) > 1 \
         and re.search(r'[^a-zA-Z0-9äöüÄÖÜß]', str(user.first_name).lower()) is None \
         and re.search(r'[^a-zA-Z0-9äöüÄÖÜß]', str(user.last_name).lower()) is None \
         and not string_in_array(user.username.lower(), exceptedUserStrings) \
         and not string_in_array(user.first_name.lower(), exceptedUserStrings) \
         and (isinstance(user.status, UserStatusOnline) or isinstance(user.status, UserStatusRecently))
-
+        #and isinstance(user.photo, UserProfilePhoto)
 
 create_user_already_added_file()
 
