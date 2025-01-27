@@ -113,10 +113,16 @@ random.shuffle(users)
 save_users_to_file = next((arg.split('=')[1] for arg in sys.argv if arg.startswith('--save-users-to-file=')), None)
 
 if save_users_to_file:
-    with open(f'./shared/{save_users_to_file}', 'w') as file:
-        for user in users:
-            if complies_with_user_rules(user):
-                file.write(user.username + '\n')
+    users_file_path = f'./shared/{save_users_to_file}'
+    usernames = set()
+    if os.path.exists(users_file_path):
+        with open(users_file_path, 'r') as file:
+            usernames = set(line.strip() for line in file.readlines())
+
+    new_usernames = {user.username for user in users if user.username and user.username not in usernames and complies_with_user_rules(user)}
+
+    with open(users_file_path, 'w') as file:
+        file.writelines(f"{username}\n" for username in sorted(usernames | new_usernames))
 
 
 else:
