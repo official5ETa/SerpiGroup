@@ -1,4 +1,4 @@
-# scrape.py {api_id} {api_hash} {phone} {from_group} {final_group} {max_users} {all|active}
+# scrape.py {api_id} {api_hash} {phone} {from_group} {final_group} {max_users} {all|active} [--save-users-to-file={filename}]
 
 import os
 import re
@@ -110,60 +110,70 @@ match sys.argv[7] if len(sys.argv) > 7 else None:
 random.shuffle(users)
 
 
-for user in users:
-    if complies_with_user_rules(user):
-        try:
-            with open(user_already_added_file, 'r+') as file:
-                alreadyAddedUsers = [alreadyAddedUser.strip() for alreadyAddedUser in file.readlines() if
-                                     alreadyAddedUser.strip() != ""]
+save_users_to_file = next((arg.split('=')[1] for arg in sys.argv if arg.startswith('--save-users-to-file=')), None)
 
-                if user.username in alreadyAddedUsers:
-                    time.sleep(.2)
+if save_users_to_file:
+    with open(f'./shared/{save_users_to_file}', 'w') as file:
+        for user in users:
+            if complies_with_user_rules(user):
+                file.write(user.username + '\n')
 
-                else:
-                    try:
-                        if sys.argv[6] and int(sys.argv[6]) != -1:
-                            participants = client.get_participants(final_group_entity)
-                            if len(participants) >= int(sys.argv[6]):
-                                print_data('MAX_USERS_REACHED', int(sys.argv[6]))
-                                exit()
-                    except:
+
+else:
+    for user in users:
+        if complies_with_user_rules(user):
+            try:
+                with open(user_already_added_file, 'r+') as file:
+                    alreadyAddedUsers = [alreadyAddedUser.strip() for alreadyAddedUser in file.readlines() if
+                                         alreadyAddedUser.strip() != ""]
+
+                    if user.username in alreadyAddedUsers:
                         time.sleep(.2)
-                        continue
 
-                    try:
-                        user_to_add = client.get_input_entity(user.username)
-                        client(InviteToChannelRequest(final_group_entity, [user_to_add]))
-                        file.write('\n' + user.username)
+                    else:
+                        try:
+                            if sys.argv[6] and int(sys.argv[6]) != -1:
+                                participants = client.get_participants(final_group_entity)
+                                if len(participants) >= int(sys.argv[6]):
+                                    print_data('MAX_USERS_REACHED', int(sys.argv[6]))
+                                    exit()
+                        except:
+                            time.sleep(.2)
+                            continue
 
-                        print_data('ADD_USER', {
-                            'username': user.username,
-                            'firstname': user.first_name,
-                            'lastname': user.last_name
-                        })
-                        time.sleep(random.randrange(40, 60))
+                        try:
+                            user_to_add = client.get_input_entity(user.username)
+                            client(InviteToChannelRequest(final_group_entity, [user_to_add]))
+                            file.write('\n' + user.username)
 
-                    except PeerFloodError:
-                        print_data('ERROR', 'USERADD_FLOOD')
-                        time.sleep(random.randrange(1800, 5400))
+                            print_data('ADD_USER', {
+                                'username': user.username,
+                                'firstname': user.first_name,
+                                'lastname': user.last_name
+                            })
+                            time.sleep(random.randrange(40, 60))
 
-                    except UserPrivacyRestrictedError:
-                        file.write('\n' + user.username)
-                        print_data('ERROR', 'USERADD_PRIVACY')
-                        time.sleep(random.randrange(10, 20))
+                        except PeerFloodError:
+                            print_data('ERROR', 'USERADD_FLOOD')
+                            time.sleep(random.randrange(1800, 5400))
 
-                    except:
-                        file.write('\n' + user.username)
-                        print_data('ERROR', 'USERADD_UNKNOWN')
-                        time.sleep(random.randrange(10, 20))
+                        except UserPrivacyRestrictedError:
+                            file.write('\n' + user.username)
+                            print_data('ERROR', 'USERADD_PRIVACY')
+                            time.sleep(random.randrange(10, 20))
 
-        except FileNotFoundError:
-            print_data('ERROR', 'COULD_NOT_FIND_USERALREADYADDED')
-            create_user_already_added_file()
-            time.sleep(1)
+                        except:
+                            file.write('\n' + user.username)
+                            print_data('ERROR', 'USERADD_UNKNOWN')
+                            time.sleep(random.randrange(10, 20))
 
-        except:
-            print_data('ERROR', 'COULD_NOT_OPEN_USERALREADYADDED')
-            time.sleep(10)
-            create_user_already_added_file()
-            time.sleep(1)
+            except FileNotFoundError:
+                print_data('ERROR', 'COULD_NOT_FIND_USERALREADYADDED')
+                create_user_already_added_file()
+                time.sleep(1)
+
+            except:
+                print_data('ERROR', 'COULD_NOT_OPEN_USERALREADYADDED')
+                time.sleep(10)
+                create_user_already_added_file()
+                time.sleep(1)
